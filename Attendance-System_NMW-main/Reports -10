@@ -1,0 +1,168 @@
+[33mcommit 45a23d679314044e16d9c218d64ed1dd938a8e65[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: nmwaccs-a11y <nmwaccs@gmail.com>
+Date:   Mon Oct 20 19:47:39 2025 +0500
+
+    Implement real-time payroll generation feature - AutoPayroll hook, settings component, and integration with existing payroll system
+
+[1mdiff --git a/AUTO_PAYROLL_FEATURE.md b/AUTO_PAYROLL_FEATURE.md[m
+[1mnew file mode 100644[m
+[1mindex 0000000..cb4c9d6[m
+[1m--- /dev/null[m
+[1m+++ b/AUTO_PAYROLL_FEATURE.md[m
+[36m@@ -0,0 +1,64 @@[m
+[32m+[m[32m# Auto Payroll Feature Documentation[m
+[32m+[m
+[32m+[m[32m## Overview[m
+[32m+[m
+[32m+[m[32mThe Auto Payroll feature automatically generates and updates payroll records whenever attendance or advance data changes, eliminating the need for manual payroll processing.[m
+[32m+[m
+[32m+[m[32m## How It Works[m
+[32m+[m
+[32m+[m[32m### Real-time Processing[m
+[32m+[m[32m- When attendance records are added or updated, payroll is automatically recalculated[m
+[32m+[m[32m- When employee advances are added, modified, or deleted, payroll is automatically adjusted[m
+[32m+[m[32m- All changes are processed in real-time without manual intervention[m
+[32m+[m
+[32m+[m[32m### Configuration Options[m
+[32m+[m[32m- **Enable/Disable**: Toggle auto payroll generation on or off[m
+[32m+[m[32m- **Attendance Triggers**: Configure whether attendance changes trigger payroll generation[m
+[32m+[m[32m- **Advance Triggers**: Configure whether advance changes trigger payroll updates[m
+[32m+[m[32m- **Notifications**: Enable or disable real-time notifications[m
+[32m+[m
+[32m+[m[32m## Technical Implementation[m
+[32m+[m
+[32m+[m[32m### Hooks[m
+[32m+[m[32m- `useAutoPayroll`: Core hook that handles real-time payroll generation[m
+[32m+[m[32m- `useMonthlyPayroll`: Existing hook with enhanced real-time capabilities[m
+[32m+[m
+[32m+[m[32m### Components[m
+[32m+[m[32m- `AutoPayrollSettings`: UI for configuring auto payroll options[m
+[32m+[m[32m- `AutoPayrollDemo`: Demonstration component for testing[m
+[32m+[m
+[32m+[m[32m### Key Features[m
+[32m+[m[32m1. **Real-time Subscriptions**: Listens for changes to attendance and advances tables[m
+[32m+[m[32m2. **Automatic Calculation**: Uses existing salary calculation service[m
+[32m+[m[32m3. **Conflict Prevention**: Prevents duplicate payroll records[m
+[32m+[m[32m4. **Error Handling**: Gracefully handles calculation errors[m
+[32m+[m[32m5. **Performance Optimized**: Batches requests to minimize database calls[m
+[32m+[m
+[32m+[m[32m## Usage[m
+[32m+[m
+[32m+[m[32m### Enabling Auto Payroll[m
+[32m+[m[32m1. Navigate to the Payroll page[m
+[32m+[m[32m2. Click the "Auto Payroll" button in the header[m
+[32m+[m[32m3. Toggle "Enable Auto Payroll" to ON[m
+[32m+[m[32m4. Configure trigger options as needed[m
+[32m+[m
+[32m+[m[32m### Manual Trigger[m
+[32m+[m[32mThe `generatePayrollForEmployee` function can be called programmatically:[m
+[32m+[m[32m```typescript[m
+[32m+[m[32mconst { generatePayrollForEmployee } = useAutoPayroll(config);[m
+[32m+[m[32mawait generatePayrollForEmployee(employeeId, month, year);[m
+[32m+[m[32m```[m
+[32m+[m
+[32m+[m[32m## Benefits[m
+[32m+[m
+[32m+[m[32m- **Reduced Manual Work**: No need to manually process payroll each month[m
+[32m+[m[32m- **Real-time Accuracy**: Payroll always reflects current attendance and advance data[m
+[32m+[m[32m- **Error Reduction**: Automated calculations reduce human error[m
+[32m+[m[32m- **Time Savings**: Immediate payroll updates save administrative time[m
+[32m+[m[32m- **Consistency**: Uniform application of payroll rules across all employees[m
+[32m+[m
+[32m+[m[32m## Limitations[m
+[32m+[m
+[32m+[m[32m- Requires stable internet connection for real-time processing[m
+[32m+[m[32m- May have slight delays during high-traffic periods[m
+[32m+[m[32m- Manual overrides still available for special circumstances[m
+\ No newline at end of file[m
+[1mdiff --git a/src/App.tsx b/src/App.tsx[m
+[1mindex ded1735..0b3a824 100644[m
+[1m--- a/src/App.tsx[m
+[1m+++ b/src/App.tsx[m
+[36m@@ -18,6 +18,7 @@[m [mimport LoginHistory from "./pages/LoginHistory";[m
+ import EditHistory from "./pages/EditHistory";[m
+ import NotFound from "./pages/NotFound";[m
+ import ResetPassword from "./pages/ResetPassword";[m
+[32m+[m[32mimport AutoPayrollDemo from "./components/AutoPayrollDemo";[m
+ [m
+ const queryClient = new QueryClient();[m
+ [m
+[36m@@ -91,6 +92,13 @@[m [mconst App = () => ([m
+                 </Layout>[m
+               </ProtectedRoute>[m
+             } />[m
+[32m+[m[32m            <Route path="/auto-payroll-demo" element={[m
+[32m+[m[32m              <ProtectedRoute>[m
+[32m+[m[32m                <Layout>[m
+[32m+[m[32m                  <AutoPayrollDemo />[m
+[32m+[m[32m                </Layout>[m
+[32m+[m[32m              </ProtectedRoute>[m
+[32m+[m[32m            } />[m
+             [m
+             {/* Catch-all route */}[m
+             <Route path="*" element={<NotFound />} />[m
+[36m@@ -102,4 +110,4 @@[m [mconst App = () => ([m
+   </QueryClientProvider>[m
+ );[m
+ [m
+[31m-export default App;[m
+[32m+[m[32mexport default App;[m
+\ No newline at end of file[m
+[1mdiff --git a/src/components/AutoPayrollDemo.tsx b/src/components/AutoPayrollDemo.tsx[m
+[1mnew file mode 100644[m
+[1mindex 0000000..9f8ac34[m
+[1m--- /dev/null[m
+[1m+++ b/src/components/AutoPayrollDemo.tsx[m
+[36m@@ -0,0 +1,96 @@[m
+[32m+[m[32mimport { useState } from "react";[m
+[32m+[m[32mimport { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";[m
+[32m+[m[32mimport { Button } from "@/components/ui/button";[m
+[32m+[m[32mimport { useAutoPayroll } from "@/hooks/useAutoPayroll";[m
+[32m+[m[32mimport { toast } from "sonner";[m
+[32m+[m
+[32m+[m[32mexport default function AutoPayrollDemo() {[m
+[32m+[m[32m  const [employeeId, setEmployeeId] = useState("");[m
+[32m+[m[32m  const [month, setMonth] = useState(new Date().getMonth() + 1);[m
+[32m+[m[32m  const [year, setYear] = useState(new Date().getFullYear());[m
+[32m+[m[41m  [m
+[32m+[m[32m  // Auto-payroll with default settings[m
+[32m+[m[32m  const { generatePayrollForEmployee } = useAutoPayroll({[m
+[32m+[m[32m    enabled: true,[m
+[32m+[m[32m    generateOnAttendanceChange: true,[m
+[32m+[m[32m    generateOnAdvanceChange: true,[m
+[32m+[m[32m    notificationEnabled: true[m
+[32m+[m[32m  });[m
+[32m+[m
+[32m+[m[32m  const handleGeneratePayroll = async () => {[m
+[32m+[m[32m    if (!employeeId) {[m
+[32m+[m[32m      toast.error("Please enter an employee ID");[m
+[32m+[m[32m      return;[m
+[32m+[m[32m    }[m
+[32m+[m[41m    [m
+[32m+[m[32m    try {[m
+[32m+[m[32m      await generatePayrollForEmployee(employeeId, month, year);[m
+[32m+[m[32m      toast.success("Payroll generated successfully!");[m
+[32m+[m[32m    } catch (error) {[m
+[32m+[m[32m      toast.error("Failed to generate payroll");[m
+[32m+[m[32m      console.error(error);[m
+[32m+[m[32m    }[m
+[32m+[m[32m  };[m
+[32m+[m
+[32m+[m[32m  return ([m
+[32m+[m[32m    <Card>[m
+[32m+[m[32m      <CardHeader>[m
+[32m+[m[32m        <CardTitle>Auto Payroll Demo</CardTitle>[m
+[32m+[m[32m        <CardDescription>[m
+[32m+[m[32m          Test the automatic payroll generation feature[m
+[32m+[m[32m        </CardDescription>[m
+[32m+[m[32m      </CardHeader>[m
+[32m+[m[32m      <CardContent className="space-y-4">[m
+[32m+[m[32m        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">[m
+[32m+[m[32m          <div>[m
+[32m+[m[32m            <label className="text-sm font-medium">Employee ID</label>[m
+[32m+[m[32m            <input[m
+[32m+[m[32m              type="text"[m
+[32m+[m[32m              value={employeeId}[m
+[32m+[m[32m              onChange={(e) => setEmployeeId(e.target.value)}[m
+[32m+[m[32m              placeholder="Enter employee ID"[m
+[32m+[m[32m              c

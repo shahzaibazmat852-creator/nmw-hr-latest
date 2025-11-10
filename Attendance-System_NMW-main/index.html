@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NMW Payroll - Attendance & HR Management System v1.0.0</title>
+    <meta name="description" content="Modern attendance tracking and payroll management system for NMW. Manage employees, track attendance, process salaries, and generate comprehensive reports." />
+    <meta name="author" content="Shahzaib" />
+    <meta name="version" content="1.0.0" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
+    <meta property="og:title" content="NMW Payroll - Attendance & HR Management System" />
+    <meta property="og:description" content="Modern attendance tracking and payroll management system for NMW. Manage employees, track attendance, process salaries, and generate comprehensive reports." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@lovable_dev" />
+    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    
+    <script>
+      // Prevent flash of unstyled content (FOUC) for theme
+      try {
+        const theme = localStorage.getItem('nmw-ui-theme');
+        if (theme === 'dark' || (!theme)) {
+          document.documentElement.classList.add('dark');
+        }
+      } catch (e) {}
+    </script>
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

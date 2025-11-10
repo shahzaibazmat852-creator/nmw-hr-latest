@@ -1,0 +1,1276 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Shimmer animation for avatars and loading states */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+}
+
+/* Mobile-specific fixes */
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    /* Smooth scrolling */
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    touch-action: manipulation;
+  }
+  
+  /* Fix for mobile viewport */
+  @media screen and (max-width: 768px) {
+    body {
+      overflow-x: hidden;
+    }
+    
+    /* Ensure mobile viewport is correct */
+    html, body {
+      width: 100%;
+      max-width: 100vw;
+    }
+    
+    /* Prevent horizontal scroll - but allow sidebar to have its own width */
+    * {
+      max-width: 100%;
+    }
+    
+    /* Exception for sidebar on mobile */
+    aside[class*="bg-sidebar"] {
+      max-width: none !important;
+    }
+  }
+  
+  /* Tablet optimizations */
+  @media screen and (min-width: 769px) and (max-width: 1024px) {
+    body {
+      overflow-x: hidden;
+    }
+  }
+  
+  /* GPU Acceleration for animations - Selectively apply to specific elements */
+  button,
+  a,
+  [role="button"],
+  .card,
+  .hover-scale,
+  img {
+    /* Enable hardware acceleration for specific interactive elements */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    /* Optimize animations */
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-perspective: 1000;
+    perspective: 1000;
+  }
+  
+  /* Separate styling for form controls - no transform to avoid issues */
+  input,
+  select,
+  textarea {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  /* Ultra-smooth transitions for interactive elements */
+  button,
+  a,
+  [role="button"] {
+    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    -webkit-transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  
+  input,
+  select,
+  textarea {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  /* Smooth card animations */
+  .card,
+  [class*="Card"] {
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  /* Ultra-smooth hover effects with spring */
+  button:hover,
+  a:hover,
+  [role="button"]:hover {
+    transform: translateY(-1px) translateZ(0);
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    -webkit-transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  
+  button:active,
+  a:active,
+  [role="button"]:active {
+    transform: translateY(0) translateZ(0) scale(0.98);
+    transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  /* Optimize transform animations for motion components only */
+  [data-framer-component]:not([role="dialog"]),
+  [data-framer-component] > *:not([role="dialog"] *) {
+    transform: translateZ(0);
+    -webkit-font-smoothing: subpixel-antialiased;
+  }
+  
+  /* Ensure all interactive elements can receive pointer events */
+  button,
+  a,
+  [role="button"],
+  input,
+  select,
+  textarea,
+  [role="dialog"],
+  [role="combobox"] {
+    pointer-events: auto !important;
+  }
+  
+  /* Ensure all overlays and dialogs appear above cards */
+  [data-radix-dialog-overlay],
+  [data-radix-alert-dialog-overlay] {
+    z-index: 9999 !important;
+  }
+  
+  [data-radix-dialog-content] {
+    z-index: 10000 !important;
+  }
+  
+  [data-radix-alert-dialog-content] {
+    z-index: 10001 !important;
+  }
+  
+  /* Ensure tooltips and popovers appear above everything */
+  [data-radix-tooltip-content],
+  [data-radix-popover-content],
+  [data-radix-select-content] {
+    z-index: 10002 !important;
+  }
+  
+  /* Reset any problematic z-index on cards */
+  .card,
+  [class*="Card"] {
+    position: relative;
+    z-index: 1;
+  }
+  
+  /* Smooth hover effects with GPU acceleration and spring */
+  .hover\:scale-105:hover {
+    transform: scale(1.05) translateY(-2px) translateZ(0);
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    -webkit-transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  
+  /* Ultra-smooth shadow transitions */
+  .hover\:shadow-strong:hover {
+    box-shadow: 0 16px 40px -10px hsl(217 91% 60% / 0.3);
+    transition: box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-transition: box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .hover\:shadow-medium:hover {
+    box-shadow: 0 8px 24px -8px hsl(217 91% 60% / 0.25);
+    transition: box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-transition: box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .shadow-soft {
+    box-shadow: 0 2px 8px -2px hsl(217 91% 60% / 0.1);
+    transition: box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  /* Smooth focus effects */
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline: none;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  /* Smooth image transitions */
+  img {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), filter 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), filter 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  img:hover {
+    transform: scale(1.05) translateZ(0);
+    filter: brightness(1.05);
+  }
+  
+  /* Ultra-smooth opacity transitions */
+  .transition-opacity {
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  /* Smooth background transitions */
+  .transition-colors {
+    transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Ensure dialogs are always visible and properly positioned */
+  [role="dialog"],
+  [data-radix-dialog-overlay],
+  [data-radix-dialog-content] {
+    isolation: isolate;
+  }
+  
+  .hover\:shadow-strong:hover {
+    transition: box-shadow 0.15s cubic-bezier(0.4, 0.0, 0.2, 1);
+  }
+  
+  /* Force light theme for report containers */
+  .light-theme-container,
+  .light-theme-container * {
+    color-scheme: light !important;
+  }
+  
+  .light-theme-container {
+    background-color: white !important;
+    color: #111827 !important;
+  }
+  
+  .light-theme-container .bg-gray-50,
+  .light-theme-container .bg-gray-100 {
+    background-color: rgb(249 250 251) !important;
+  }
+  
+  .light-theme-container .bg-gray-100 {
+    background-color: rgb(243 244 246) !important;
+  }
+  
+  .light-theme-container .text-gray-700,
+  .light-theme-container .text-gray-900 {
+    color: #111827 !important;
+  }
+  
+  .light-theme-container .text-gray-600,
+  .light-theme-container .text-gray-500 {
+    color: #4b5563 !important;
+  }
+  
+  .light-theme-container .border-gray-300 {
+    border-color: #d1d5db !important;
+  }
+  
+  /* Prefers reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
+
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+
+    --accent: 142 76% 36%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 217 91% 60%;
+
+    --radius: 0.75rem;
+
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+    
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    
+    --info: 199 89% 48%;
+    --info-foreground: 0 0% 100%;
+
+    --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(221 83% 53%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(142 76% 36%) 0%, hsl(142 76% 46%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(262 83% 58%) 100%);
+    
+    --shadow-soft: 0 2px 8px -2px hsl(217 91% 60% / 0.1);
+    --shadow-medium: 0 4px 16px -4px hsl(217 91% 60% / 0.15);
+    --shadow-strong: 0 8px 24px -6px hsl(217 91% 60% / 0.2);
+
+    --sidebar-background: 222 47% 11%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 217 91% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 217 91% 60% / 0.1;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217 91% 60% / 0.1;
+    --sidebar-ring: 217 91% 60%;
+  }
+
+  .dark {
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
+
+    --card: 222 47% 13%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 142 76% 36%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
+    --ring: 217 91% 60%;
+
+    --radius: 0.75rem;
+
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+    
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    
+    --info: 199 89% 48%;
+    --info-foreground: 0 0% 100%;
+
+    --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(221 83% 53%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(142 76% 36%) 0%, hsl(142 76% 46%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(262 83% 58%) 100%);
+    
+    --shadow-soft: 0 2px 8px -2px hsl(0 0% 0% / 0.3);
+    --shadow-medium: 0 4px 16px -4px hsl(0 0% 0% / 0.4);
+    --shadow-strong: 0 8px 24px -6px hsl(0 0% 0% / 0.5);
+
+    --sidebar-background: 222 47% 11%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 217 91% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 217 33% 17%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217 33% 17%;
+    --sidebar-ring: 217 91% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Enhanced Print Styles - Only apply when actually printing */
+@media print {
+  @page {
+    size: A4;
+    margin: 0.8cm;
+  }
+
+  /* Ensure colors print correctly */
+  * {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  /* Hide navigation and buttons */
+  nav,
+  aside,
+  .print\:hidden,
+  button:not(.print-show),
+  .no-print {
+    display: none !important;
+  }
+
+  /* Show print-only elements */
+  .print\:block {
+    display: block !important;
+  }
+
+  .print\:flex {
+    display: flex !important;
+  }
+
+  /* Optimize for print */
+  body {
+    font-size: 12pt;
+    line-height: 1.4;
+    background: white !important;
+    color: black !important;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Show only printable content - wage card, ledger reports, or attendance reports */
+  body > * {
+    display: none !important;
+  }
+  
+  body > #root {
+    display: block !important;
+  }
+  
+  /* Hide non-printable content - show only if it has wage-card, ledger-salary-report, or ledger-attendance-report */
+  #root > *:not(:has(.wage-card)):not(:has(.ledger-salary-report)):not(:has(.ledger-attendance-report)) {
+    display: none !important;
+  }
+  
+  /* Make wage card and all parents visible */
+  .wage-card,
+  .wage-card > *,
+  .wage-card * {
+    visibility: visible !important;
+  }
+  
+  /* Show parent chain for wage card */
+  *:has(.wage-card) {
+    display: block !important;
+    visibility: visible !important;
+  }
+  
+  /* Make ledger salary report and all parents visible */
+  .ledger-salary-report,
+  .ledger-salary-report > *,
+  .ledger-salary-report * {
+    visibility: visible !important;
+  }
+  
+  /* Show parent chain for ledger salary report */
+  *:has(.ledger-salary-report) {
+    display: block !important;
+    visibility: visible !important;
+  }
+  
+  /* Make ledger attendance report and all parents visible */
+  .ledger-attendance-report,
+  .ledger-attendance-report > *,
+  .ledger-attendance-report * {
+    visibility: visible !important;
+  }
+  
+  /* Show parent chain for ledger attendance report */
+  *:has(.ledger-attendance-report) {
+    display: block !important;
+    visibility: visible !important;
+  }
+  
+  /* Dialog should be static for print */
+  [role="dialog"]:has(.wage-card) {
+    position: static !important;
+    inset: auto !important;
+    transform: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+    border: none !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+  }
+  
+  [data-radix-dialog-content]:has(.wage-card) {
+    position: static !important;
+    inset: auto !important;
+    transform: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+  
+  [data-radix-dialog-overlay] {
+    display: none !important;
+  }
+  
+  /* Wage card container */
+  .wage-card {
+    position: relative !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    background: white !important;
+    color: black !important;
+    page-break-inside: avoid !important;
+  }
+  
+  /* Card wrapper */
+  .wage-card > div {
+    width: 100% !important;
+    border: 2px solid #000 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    page-break-inside: avoid !important;
+  }
+  
+  /* Header */
+  .wage-card .bg-gradient-hero {
+    background: #1a1a1a !important;
+    color: white !important;
+    padding: 0.5cm 1cm !important;
+    page-break-after: avoid !important;
+  }
+  
+  .wage-card h1 {
+    font-size: 18pt !important;
+    margin-bottom: 0.2cm !important;
+  }
+  
+  .wage-card h2 {
+    font-size: 14pt !important;
+    margin-bottom: 0.3cm !important;
+  }
+  
+  /* Employee info */
+  .wage-card .bg-muted\/30 {
+    background: #f5f5f5 !important;
+    padding: 0.3cm !important;
+    page-break-after: avoid !important;
+  }
+  
+  /* Main content area - keep together */
+  .wage-card .p-8 {
+    padding: 0.4cm !important;
+    display: grid !important;
+  }
+  
+  .wage-card .p-8.lg\\:grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.4cm !important;
+  }
+  
+  /* Calendar section - must stay together */
+  .wage-card .bg-muted\/20 {
+    background: #f9f9f9 !important;
+    border: 1px solid #ccc !important;
+    padding: 0.2cm !important;
+    page-break-inside: avoid !important;
+  }
+  
+  /* Calendar grid - preserve grid layout */
+  .wage-card .calendar-grid {
+    display: grid !important;
+    grid-template-columns: repeat(7, 1fr) !important;
+    gap: 2px !important;
+    page-break-inside: avoid !important;
+  }
+  
+  .wage-card .calendar-day {
+    border: 1px solid #999 !important;
+    background: white !important;
+    color: black !important;
+    font-size: 7pt !important;
+    padding: 2px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 30px !important;
+    aspect-ratio: 1 !important;
+    page-break-inside: avoid !important;
+  }
+  
+  .wage-card .calendar-day svg {
+    width: 10px !important;
+    height: 10px !important;
+  }
+  
+  /* Grid layouts */
+  .wage-card .grid {
+    display: grid !important;
+  }
+  
+  .wage-card .grid-cols-7 {
+    grid-template-columns: repeat(7, 1fr) !important;
+  }
+  
+  .wage-card .grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  
+  .wage-card .grid-cols-4 {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+  
+  .wage-card .lg\\:grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  
+  /* Summary stats - keep compact */
+  .wage-card .summary-stats {
+    margin-top: 0.2cm !important;
+    gap: 0.1cm !important;
+    page-break-inside: avoid !important;
+  }
+  
+  .wage-card .summary-stats > div {
+    padding: 0.2cm !important;
+    font-size: 9pt !important;
+  }
+  
+  .wage-card .summary-stats .text-2xl {
+    font-size: 14pt !important;
+  }
+  
+  /* Summary cards */
+  .wage-card .bg-success\/10,
+  .wage-card .bg-destructive\/10,
+  .wage-card .bg-warning\/10,
+  .wage-card .bg-info\/10 {
+    background: white !important;
+    border: 1px solid #ccc !important;
+  }
+  
+  /* Salary breakdown - keep together */
+  .wage-card .salary-breakdown {
+    page-break-inside: avoid !important;
+  }
+  
+  .wage-card .bg-gradient-to-br {
+    background: #f5f5f5 !important;
+    border: 1px solid #ccc !important;
+    padding: 0.3cm !important;
+    page-break-inside: avoid !important;
+  }
+  
+  .wage-card .bg-background\/50 {
+    background: white !important;
+    border: 1px solid #ddd !important;
+    padding: 0.1cm 0.2cm !important;
+    font-size: 9pt !important;
+  }
+  
+  /* Compact spacing for salary items */
+  .wage-card .space-y-2 > * + * {
+    margin-top: 0.1cm !important;
+  }
+  
+  /* Signature */
+  .wage-card .signature-area {
+    border-top: 2px solid #000 !important;
+    padding: 0.5cm !important;
+    page-break-inside: avoid !important;
+    margin-top: 0.3cm !important;
+  }
+  
+  .wage-card .signature-area .mt-12 {
+    margin-top: 0.5cm !important;
+  }
+  
+  /* Text colors */
+  .wage-card .text-success,
+  .wage-card .text-destructive,
+  .wage-card .text-warning,
+  .wage-card .text-info,
+  .wage-card .text-primary,
+  .wage-card .text-emerald-600,
+  .wage-card .text-rose-600,
+  .wage-card .text-amber-600,
+  .wage-card .text-blue-600 {
+    color: black !important;
+  }
+  
+  .wage-card .text-white {
+    color: white !important;
+  }
+
+  /* Ensure proper page breaks */
+  .page-break-before {
+    page-break-before: always;
+  }
+
+  .page-break-after {
+    page-break-after: always;
+  }
+
+  .page-break-inside-avoid {
+    page-break-inside: avoid;
+  }
+
+  /* Optimize table handling */
+  table {
+    page-break-inside: auto;
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 10pt;
+    margin: 0;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tbody {
+    page-break-inside: avoid;
+  }
+
+  tr {
+    page-break-inside: auto;
+  }
+
+  td, th {
+    padding: 4px;
+    border: 1px solid #ccc;
+  }
+
+  /* Optimize images */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Card styling for print - Remove ALL shadows */
+  .card, .Card,
+  .shadow, .shadow-sm, .shadow-md, .shadow-lg, .shadow-xl, .shadow-2xl,
+  .shadow-soft, .shadow-medium, .shadow-strong {
+    box-shadow: none !important;
+    border: 1px solid #ddd !important;
+    page-break-inside: avoid;
+  }
+
+  /* Remove ALL background gradients */
+  .bg-gradient-hero,
+  .bg-gradient-primary,
+  .bg-gradient-accent {
+    background: white !important;
+    color: #000 !important;
+  }
+
+  /* Ensure text contrast */
+  .text-white {
+    color: #000 !important;
+  }
+
+  /* Make badges readable */
+  .badge {
+    border: 1px solid #000 !important;
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  /* Remove ALL shadows - Most aggressive approach */
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Dialog print styles - More targeted approach */
+  .print-dialog-content {
+    position: static !important;
+    inset: 0 !important;
+    max-width: none !important;
+    max-height: none !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    transform: none !important;
+    left: 0 !important;
+    top: 0 !important;
+    translate: 0 !important;
+    background: white !important;
+  }
+
+  .print\:z-\[9999\] {
+    z-index: 9999 !important;
+  }
+
+  .print\:min-h-screen {
+    min-height: 100vh !important;
+  }
+
+  .print\:bg-white {
+    background: white !important;
+  }
+
+  /* Remove all transforms and positioning for print */
+  .translate, .scale, .rotate, .transform {
+    transform: none !important;
+  }
+
+  /* Ensure proper width for print */
+  .max-w-7xl {
+    max-width: 100% !important;
+  }
+
+  /* Remove any overflow restrictions */
+  .overflow-y-auto,
+  .overflow-x-auto,
+  .overflow-auto {
+    overflow: visible !important;
+  }
+
+  /* Ensure proper scaling */
+  .scale-105,
+  .scale-95,
+  .scale-90 {
+    transform: scale(1) !important;
+  }
+}
+
+/* Enhanced Print Styles for Ledger Reports - Only apply when actually printing */
+@media print {
+  /* Specific styles for ledger reports */
+  .ledger-report {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 12pt;
+    line-height: 1.4;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .ledger-report h1 {
+    font-size: 18pt;
+    margin-bottom: 10pt;
+  }
+  
+  .ledger-report h2 {
+    font-size: 16pt;
+    margin-bottom: 8pt;
+  }
+  
+  .ledger-report h3 {
+    font-size: 14pt;
+    margin-bottom: 6pt;
+  }
+  
+  .ledger-report table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15pt;
+    font-size: 10pt;
+    page-break-inside: auto;
+  }
+  
+  .ledger-report th,
+  .ledger-report td {
+    border: 1pt solid #000;
+    padding: 4pt;
+    text-align: left;
+  }
+  
+  .ledger-report th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+  }
+  
+  .ledger-report .text-right {
+    text-align: right;
+  }
+  
+  .ledger-report .text-center {
+    text-align: center;
+  }
+  
+  .ledger-report .font-bold {
+    font-weight: bold;
+  }
+  
+  .ledger-report .border-l-4 {
+    border-left: 4pt solid #000;
+  }
+  
+  .ledger-report .summary-card {
+    break-inside: avoid;
+    margin-bottom: 15pt;
+  }
+  
+  .ledger-report .page-break {
+    page-break-before: always;
+  }
+  
+  /* Prevent page breaks in header */
+  .ledger-report > div:first-child {
+    page-break-inside: avoid;
+  }
+  
+  /* Calendar grid styling - Prevent page breaks */
+  .ledger-report .calendar-grid {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  
+  .ledger-report .calendar-day {
+    aspect-ratio: 1;
+    min-height: 20px;
+    page-break-inside: avoid;
+  }
+  
+  /* Ensure proper spacing */
+  .ledger-report .mb-10 {
+    margin-bottom: 20pt;
+  }
+  
+  .ledger-report .mb-8 {
+    margin-bottom: 18pt;
+  }
+  
+  .ledger-report .mb-6 {
+    margin-bottom: 15pt;
+  }
+  
+  .ledger-report .mb-4 {
+    margin-bottom: 10pt;
+  }
+  
+  /* Remove padding and margins for print */
+  .ledger-report .p-6 {
+    padding: 8pt !important;
+  }
+  
+  .ledger-report .p-4 {
+    padding: 6pt !important;
+  }
+  
+  .ledger-report .p-3 {
+    padding: 4pt !important;
+  }
+  
+  /* Footer styles */
+  .ledger-report footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 9pt;
+  }
+  
+  /* Ensure tables don't break awkwardly */
+  .ledger-report tbody {
+    page-break-inside: auto;
+  }
+  
+  .ledger-report tr {
+    page-break-inside: avoid;
+  }
+  
+  /* Force calendar to stay together */
+  .ledger-report .calendar-container {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    display: block;
+  }
+  
+  /* Ensure grid layouts work for print */
+  .ledger-report .grid {
+    display: grid !important;
+    page-break-inside: avoid;
+  }
+}
+
+/* Ledger Salary Report Print Styles */
+@media print {
+  .ledger-salary-report {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 11pt;
+    line-height: 1.3;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0.5cm;
+    page-break-inside: avoid;
+  }
+  
+  .ledger-salary-report h1 {
+    font-size: 18pt;
+    margin-bottom: 8pt;
+    page-break-after: avoid;
+  }
+  
+  .ledger-salary-report h2 {
+    font-size: 14pt;
+    margin-bottom: 6pt;
+    page-break-after: avoid;
+  }
+  
+  .ledger-salary-report h3 {
+    font-size: 12pt;
+    margin-bottom: 4pt;
+    page-break-after: avoid;
+  }
+  
+  .ledger-salary-report table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 12pt;
+    font-size: 10pt;
+    page-break-inside: auto;
+  }
+  
+  .ledger-salary-report th,
+  .ledger-salary-report td {
+    border: 1pt solid #000;
+    padding: 3pt 5pt;
+    text-align: left;
+  }
+  
+  .ledger-salary-report th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+  }
+  
+  .ledger-salary-report .text-right {
+    text-align: right;
+  }
+  
+  .ledger-salary-report .text-center {
+    text-align: center;
+  }
+  
+  .ledger-salary-report .font-bold {
+    font-weight: bold;
+  }
+  
+  .ledger-salary-report .summary-card {
+    break-inside: avoid;
+    margin-bottom: 10pt;
+    border: 1pt solid #ccc;
+    padding: 8pt;
+  }
+  
+  .ledger-salary-report thead {
+    display: table-header-group;
+  }
+  
+  .ledger-salary-report tbody {
+    page-break-inside: auto;
+  }
+  
+  .ledger-salary-report tr {
+    page-break-inside: avoid;
+  }
+  
+  /* Remove shadows and backgrounds for print */
+  .ledger-salary-report * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+}
+
+/* Ledger Attendance Report Print Styles */
+@media print {
+  .ledger-attendance-report {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 11pt;
+    line-height: 1.3;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0.5cm;
+    page-break-inside: avoid;
+  }
+  
+  .ledger-attendance-report h1 {
+    font-size: 18pt;
+    margin-bottom: 8pt;
+    page-break-after: avoid;
+  }
+  
+  .ledger-attendance-report h2 {
+    font-size: 14pt;
+    margin-bottom: 6pt;
+    page-break-after: avoid;
+  }
+  
+  .ledger-attendance-report h3 {
+    font-size: 12pt;
+    margin-bottom: 4pt;
+    page-break-after: avoid;
+  }
+  
+  .ledger-attendance-report table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 12pt;
+    font-size: 10pt;
+    page-break-inside: auto;
+  }
+  
+  .ledger-attendance-report th,
+  .ledger-attendance-report td {
+    border: 1pt solid #000;
+    padding: 3pt 5pt;
+    text-align: left;
+  }
+  
+  .ledger-attendance-report th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+  }
+  
+  .ledger-attendance-report .text-right {
+    text-align: right;
+  }
+  
+  .ledger-attendance-report .text-center {
+    text-align: center;
+  }
+  
+  .ledger-attendance-report .font-bold {
+    font-weight: bold;
+  }
+  
+  .ledger-attendance-report .calendar-grid {
+    display: block !important;
+    page-break-inside: avoid !important;
+  }
+  
+  /* Calendar grid container */
+  .ledger-attendance-report .calendar-grid > div:last-child {
+    display: grid !important;
+    grid-template-columns: repeat(7, 1fr) !important;
+    gap: 1pt !important;
+    margin-top: 3pt;
+  }
+  
+  /* Calendar header */
+  .ledger-attendance-report .calendar-grid > div:first-child {
+    display: grid !important;
+    grid-template-columns: repeat(7, 1fr) !important;
+    gap: 1pt !important;
+    margin-bottom: 2pt;
+    font-weight: bold;
+  }
+  
+  .ledger-attendance-report .calendar-day {
+    border: 1pt solid #666 !important;
+    background: white !important;
+    color: black !important;
+    font-size: 8pt !important;
+    padding: 3pt 2pt !important;
+    min-height: 35px !important;
+    max-height: 35px !important;
+    height: 35px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    page-break-inside: avoid !important;
+    aspect-ratio: auto !important;
+  }
+  
+  .ledger-attendance-report .calendar-day > div:first-child {
+    font-weight: bold;
+    font-size: 9pt !important;
+    margin-bottom: 1pt;
+  }
+  
+  .ledger-attendance-report .calendar-day > div:last-child {
+    font-size: 7pt !important;
+  }
+  
+  .ledger-attendance-report .summary-card {
+    break-inside: avoid;
+    margin-bottom: 10pt;
+    border: 1pt solid #ccc;
+    padding: 8pt;
+  }
+  
+  .ledger-attendance-report thead {
+    display: table-header-group;
+  }
+  
+  .ledger-attendance-report tbody {
+    page-break-inside: auto;
+  }
+  
+  .ledger-attendance-report tr {
+    page-break-inside: avoid;
+  }
+  
+  /* Remove shadows and backgrounds for print */
+  .ledger-attendance-report * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  
+  /* Print color for badges */
+  .ledger-attendance-report .bg-green-100 {
+    background: #e8f5e9 !important;
+    color: #2e7d32 !important;
+  }
+  
+  .ledger-attendance-report .bg-red-100 {
+    background: #ffebee !important;
+    color: #c62828 !important;
+  }
+  
+  .ledger-attendance-report .bg-yellow-100 {
+    background: #fff9c4 !important;
+    color: #f57f17 !important;
+  }
+  
+  .ledger-attendance-report .bg-blue-100 {
+    background: #e3f2fd !important;
+    color: #1565c0 !important;
+  }
+}
+
+/* Wage Card Print Styles - Add at end of existing @media print block */
