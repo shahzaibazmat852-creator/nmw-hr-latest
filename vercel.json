@@ -1,10 +1,10 @@
 {
   "version": 2,
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
+  "buildCommand": "cd Attendance-System_NMW-main && npm run build",
+  "outputDirectory": "Attendance-System_NMW-main/dist",
   "framework": "vite",
-  "installCommand": "npm ci",
-  "devCommand": "npm run dev",
+  "installCommand": "cd Attendance-System_NMW-main && npm ci",
+  "devCommand": "cd Attendance-System_NMW-main && npm run dev",
   "build": {
     "env": {
       "NODE_ENV": "production"
@@ -71,3 +71,4 @@
     }
   ]
 }
+

@@ -46,3 +46,6 @@ bun.lockb
 
 # OS files
 Thumbs.db
+
+# Temporary build files
+*.timestamp-*.mjs
